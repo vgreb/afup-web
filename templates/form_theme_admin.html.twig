@@ -8,12 +8,12 @@
 {%- endblock form_label -%}
 
 {%- block form_row -%}
+    {{ form_errors(form) }}
     <div class="inline fields ui grid">
         {{ form_label(form) }}
         <div class="field nine wide column">
             <div class="ui input">
                 {{ form_widget(form) }}
-                {{ form_errors(form) }}
             </div>
         </div>
     </div>
@@ -38,3 +38,20 @@
         </div>
     {%- endif -%}
 {%- endblock datetime_widget -%}
+
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <div class="ui grid">
+            <div class="three wide column">
+            </div>
+            <div class="nine wide column">
+                <div class="ui negative message">
+                    {%- for error in errors -%}
+                        {{ error.message }}<br>
+                    {%- endfor -%}
+                </div>
+            </div>
+        </div>
+    {%- endif -%}
+{%- endblock form_errors -%}
