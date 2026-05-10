@@ -42,13 +42,10 @@
 
 {% block javascript %}
 {{ parent() }}
-<script src="https://code.highcharts.com/highcharts.src.js"></script>
+{% if event is not null %}
 <script>
-    var chartLines = new Highcharts.Chart( {{ chartConf|json_encode|raw }} );
-    var chartPie = new Highcharts.Chart('pieChartContainer', {{ pieChartConf | json_encode | raw }});
-
-    $(document).ready(function() {
-        $('.ui.progress').progress();
-    })
+    window.chartConf = {{ chartConf|json_encode|raw }};
+    window.pieChartConf = {{ pieChartConf|json_encode|raw }};
 </script>
+{% endif %}
 {% endblock %}

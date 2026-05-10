@@ -62,7 +62,7 @@
     {{ parent() }}
     <script src="/javascript/fonctions.js" defer="defer"></script>
     <script>
-        $(() => {
+        document.addEventListener('DOMContentLoaded', () => {
             const firstname = document.querySelector('[data-role="field-firstname"]');
             const lastname = document.querySelector('[data-role="field-lastname"]');
             const login = document.querySelector('[data-role="field-login"]');

@@ -169,48 +169,14 @@
             </div>
 
             {% block javascript %}
-            <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
-                <script src="{{ asset('vendor/semantic-ui/dist/semantic.min.js') }}"></script>
-
+            {{ importmap('backend') }}
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-            <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-
-                <script type="text/javascript" src="/javascript/dropzone/dropzone.min.js"></script>
-
-                <script src="/javascript/tiny_mce/tiny_mce.js"></script>
-                <script src="/javascript/tiny_mce/jquery.tinymce.js"></script>
-                <script src="/javascript/tinymce.js"></script>
-
-            <script src="/js_dist/admin.js"></script>
-
-
-
-
-            <script>
-                $(document).ready(function() {
-                    $('.ui.dropdown').dropdown({action: "select"});
-                    $('.ui.checkbox').checkbox();
-                    $('.ui.accordion')
-                        .accordion()
-                    ;
-                });
-
-                $(document).ready(function () {
-                    $(document).on('click', '.confirmable', function () {
-                        return confirm($(this).data('confirmable-label'));
-                    });
-                });
-
-                var simpleMdeList = document.getElementsByClassName('simplemde');
-                for (var i = 0; i < simpleMdeList.length; i++) {
-                    var simplemde = new SimpleMDE({
-                        element:simpleMdeList[i],
-                        spellChecker: false,
-                        hideIcons: ['side-by-side', 'fullscreen']
-                    });
-                }
-
-            </script>
+            <script src="{{ asset('vendor/semantic-ui/dist/semantic.min.js') }}" defer></script>
+            <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js" defer></script>
+            <script src="/javascript/dropzone/dropzone.min.js" defer></script>
+            <script src="/javascript/tiny_mce/tiny_mce.js" defer></script>
+            <script src="/javascript/tiny_mce/jquery.tinymce.js" defer></script>
+            <script src="/javascript/tinymce.js" defer></script>
 
             {% if js is defined %}
                 {{ js|raw }}

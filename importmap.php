@@ -16,11 +16,25 @@ return [
         'path' => './assets/app.js',
         'entrypoint' => true,
     ],
+    'backend' => [
+        'path' => './assets/backend.js',
+        'entrypoint' => true,
+    ],
+    'admin-journal-list' => [
+        'path' => './assets/admin-journal-list.js',
+        'entrypoint' => true,
+    ],
     'semantic-ui/dist/semantic.min.css' => [
         'version' => '2.5.0',
-        'type' => 'css'
+        'type' => 'css',
     ],
     'semantic-ui/dist/semantic.min.js' => [
-        'version' => '2.5.0'
+        'version' => '2.5.0',
+    ],
+    'highcharts' => [
+        'version' => '12.6.0',
+    ],
+    'jquery' => [
+        'version' => '3.1.1',
     ],
 ];
