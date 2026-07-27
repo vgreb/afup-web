@@ -6,9 +6,10 @@ namespace AppBundle\Association\CompanyMembership;
 
 use AppBundle\MembershipFee\MembershipFeeService;
 use Afup\Site\Utils\Utils;
+use AppBundle\Association\Entity\PersonneMorale;
 use AppBundle\Association\MemberType;
-use AppBundle\Association\Model\CompanyMember;
 use AppBundle\MembershipFee\Model\MembershipFee;
+use Webmozart\Assert\Assert;
 
 final readonly class SubscriptionManagement
 {
@@ -18,14 +19,16 @@ final readonly class SubscriptionManagement
 
     public function __construct(private MembershipFeeService $membershipFeeService) {}
 
-    public function createInvoiceForInscription(CompanyMember $company, int $numberOfMembers): array
+    public function createInvoiceForInscription(PersonneMorale $company, int $numberOfMembers): array
     {
+        Assert::notNull($company->id);
+
         $endSubscription = $this->membershipFeeService->getNextSubscriptionExpiration(null);
 
         // Create the invoice
         $this->membershipFeeService->ajouter(
             MemberType::MemberCompany,
-            $company->getId(),
+            $company->id,
             ceil($numberOfMembers / self::AFUP_PERSONNE_MORALE_SEUIL) * self::AFUP_COTISATION_PERSONNE_MORALE * (1 + Utils::MEMBERSHIP_FEE_VAT_RATE),
             null,
             null,
@@ -33,7 +36,7 @@ final readonly class SubscriptionManagement
             $endSubscription->getTimestamp(),
             '',
         );
-        $subscription = $this->membershipFeeService->getLatestByUserTypeAndId(MemberType::MemberCompany, $company->getId());
+        $subscription = $this->membershipFeeService->getLatestByUserTypeAndId(MemberType::MemberCompany, $company->id);
 
         if (!$subscription instanceof MembershipFee) {
             throw new \RuntimeException('An error occured');

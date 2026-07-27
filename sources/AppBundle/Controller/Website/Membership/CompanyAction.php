@@ -6,62 +6,64 @@ namespace AppBundle\Controller\Website\Membership;
 
 use AppBundle\Association\CompanyMembership\InvitationMail;
 use AppBundle\Association\CompanyMembership\SubscriptionManagement;
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\PersonneMoraleInvitation;
+use AppBundle\Association\Entity\Repository\PersonneMoraleInvitationRepository;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\Form\CompanyMemberType;
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\CompanyMemberInvitation;
-use AppBundle\Association\Model\Repository\CompanyMemberInvitationRepository;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Twig\ViewRenderer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Webmozart\Assert\Assert;
 
 final class CompanyAction extends AbstractController
 {
     public function __construct(
         private readonly ViewRenderer $view,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly InvitationMail $invitationMail,
         private readonly SubscriptionManagement $subscriptionManagement,
-        private readonly CompanyMemberInvitationRepository $companyMemberInvitationRepository,
+        private readonly PersonneMoraleInvitationRepository $personneMoraleInvitationRepository,
     ) {}
 
     public function __invoke(Request $request): Response
     {
-        $data = new CompanyMember();
-        $data->setInvitations([
-            new CompanyMemberInvitation()->setManager(true),
-        ]);
+        $firstInvitation = new PersonneMoraleInvitation();
+        $firstInvitation->manager = true;
+
+        $data = new PersonneMorale();
+        $data->invitations = [$firstInvitation];
 
         $subscribeForm = $this->createForm(CompanyMemberType::class, $data);
         $subscribeForm->handleRequest($request);
 
         if ($subscribeForm->isSubmitted() && $subscribeForm->isValid()) {
             /**
-             * @var CompanyMember $member
+             * @var PersonneMorale $member
              */
             $member = $subscribeForm->getData();
-            $this->companyMemberRepository->save($member);
+            $this->personneMoraleRepository->save($member);
+            Assert::notNull($member->id);
 
-            foreach ($member->getInvitations() as $index => $invitation) {
-                if ($invitation->getEmail() === '') {
+            $invitations = $member->invitations ?? [];
+            foreach ($invitations as $index => $invitation) {
+                if ($invitation->email === '') {
                     continue;
                 }
-                $invitation
-                    ->setSubmittedOn(new \DateTime())
-                    ->setCompanyId($member->getId())
-                    ->setToken(base64_encode(random_bytes(30)))
-                    ->setStatus(CompanyMemberInvitation::STATUS_PENDING)
-                ;
+                $invitation->submittedOn = new \DateTime();
+                $invitation->companyId = $member->id;
+                $invitation->token = base64_encode(random_bytes(30));
+                $invitation->status = PersonneMoraleInvitation::STATUS_PENDING;
                 if ($index === 0) {
                     // By security, force first employee to be defined as a manager
-                    $invitation->setManager(true);
+                    $invitation->manager = true;
                 }
 
-                $this->companyMemberInvitationRepository->save($invitation);
+                $this->personneMoraleInvitationRepository->save($invitation);
 
                 // Send mail to the other guy, begging for him to join the company
                 $this->eventDispatcher->addListener(KernelEvents::TERMINATE, function () use ($member, $invitation): void {
@@ -70,7 +72,7 @@ final class CompanyAction extends AbstractController
             }
 
             $subscriptionManager = $this->subscriptionManagement;
-            $invoice = $subscriptionManager->createInvoiceForInscription($member, count($member->getInvitations()));
+            $invoice = $subscriptionManager->createInvoiceForInscription($member, count($invitations));
 
             return $this->redirectToRoute('company_membership_payment', ['invoiceNumber' => $invoice['invoice'], 'token' => $invoice['token']]);
         }

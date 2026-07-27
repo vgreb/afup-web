@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Association\Form;
 
 use AppBundle\Association\CompanyMembership\SubscriptionManagement;
-use AppBundle\Association\Model\CompanyMember;
+use AppBundle\Association\Entity\PersonneMorale;
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
 use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue as RecaptchaIsValid;
 use Symfony\Component\Form\AbstractType;
@@ -32,40 +32,48 @@ class CompanyMemberType extends AbstractType
         $builder
             ->add('companyName', TextType::class, [
                 'label' => 'Company',
+                'empty_data' => '',
                 'constraints' => [
                     new Length(max: 100),
                 ],
             ])
             ->add('firstName', TextType::class, [
                 'label' => 'Firstname',
+                'empty_data' => '',
                 'constraints' => [
                     new Length(max: 40),
                 ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Lastname',
+                'empty_data' => '',
                 'constraints' => [
                     new Length(max: 40),
                 ],
             ])
             ->add('email', EmailType::class, [
+                'empty_data' => '',
                 'constraints' => [
                     new Length(max: 100),
                 ],
             ])
             ->add('siret', TextType::class, [
+                'empty_data' => '',
                 'constraints' => [
                     new Length(max: 14),
                 ],
             ])
-            ->add('address', TextareaType::class)
+            ->add('address', TextareaType::class, ['empty_data' => ''])
             ->add('zipcode', TextType::class, [
                 'label' => 'Zip code',
+                'property_path' => 'zipCode',
+                'empty_data' => '',
                 'constraints' => [
                     new Length(max: 10),
                 ],
             ])
             ->add('city', TextType::class, [
+                'empty_data' => '',
                 'constraints' => [
                     new Length(max: 50),
                 ],
@@ -102,7 +110,7 @@ class CompanyMemberType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => CompanyMember::class,
+            'data_class' => PersonneMorale::class,
         ]);
     }
 }

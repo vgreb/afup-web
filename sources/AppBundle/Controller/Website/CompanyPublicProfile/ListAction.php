@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller\Website\CompanyPublicProfile;
 
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Twig\ViewRenderer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,16 +14,16 @@ final class ListAction extends AbstractController
 {
     public function __construct(
         private readonly ViewRenderer $view,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
     ) {}
 
     public function __invoke(): Response
     {
-        $displayableCompanies = $this->companyMemberRepository->findDisplayableCompanies();
+        $displayableCompanies = $this->personneMoraleRepository->findDisplayableCompanies();
 
-        usort($displayableCompanies, function (CompanyMember $companyMemberA, CompanyMember $companyMemberB): int {
-            $a = $companyMemberA->getCompanyName();
-            $b = $companyMemberB->getCompanyName();
+        usort($displayableCompanies, function (PersonneMorale $companyMemberA, PersonneMorale $companyMemberB): int {
+            $a = $companyMemberA->companyName;
+            $b = $companyMemberB->companyName;
             return $a <=> $b;
         });
 

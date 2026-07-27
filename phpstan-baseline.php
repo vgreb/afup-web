@@ -5222,18 +5222,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/sources/AppBundle/Controller/ValueResolver/AdminEventSelectionValueResolver.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$code of method AppBundle\\\\Antennes\\\\AntenneRepository\\:\\:findByCode\\(\\) expects string, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/CompanyPublicProfile/IndexAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$callback of function usort expects callable\\(mixed, mixed\\)\\: int, Closure\\(AppBundle\\\\Association\\\\Model\\\\CompanyMember, AppBundle\\\\Association\\\\Model\\\\CompanyMember\\)\\: int\\<\\-1, 1\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/CompanyPublicProfile/ListAction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'hits\' on mixed\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -5270,24 +5258,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Global/HtmlSitemapAction.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getCompanyName\\(\\) on mixed\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Global/HtmlSitemapAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getId\\(\\) on mixed\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Global/HtmlSitemapAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getSlug\\(\\) on mixed\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Global/HtmlSitemapAction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method AppBundle\\\\Controller\\\\Website\\\\Global\\\\HtmlSitemapAction\\:\\:buildPages\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -5312,108 +5282,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Global/HtmlSitemapAction.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'careers_page_url\' on mixed\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'contact_page_url\' on mixed\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'description\' on mixed\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'enabled\' on mixed\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'logo\' on mixed\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'membership_reason\' on mixed\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'related_afup_offices\' on mixed\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'twitter_handle\' on mixed\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'website_url\' on mixed\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$careersPageUrl of method AppBundle\\\\Association\\\\Model\\\\CompanyMember\\:\\:setCareersPageUrl\\(\\) expects string\\|null, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$contactPageUrl of method AppBundle\\\\Association\\\\Model\\\\CompanyMember\\:\\:setContactPageUrl\\(\\) expects string\\|null, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$description of method AppBundle\\\\Association\\\\Model\\\\CompanyMember\\:\\:setDescription\\(\\) expects string\\|null, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$membershipReason of method AppBundle\\\\Association\\\\Model\\\\CompanyMember\\:\\:setMembershipReason\\(\\) expects string\\|null, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$publicProfileEnabled of method AppBundle\\\\Association\\\\Model\\\\CompanyMember\\:\\:setPublicProfileEnabled\\(\\) expects bool, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$relatedAfupOffices of method AppBundle\\\\Association\\\\Model\\\\CompanyMember\\:\\:setFormattedRelatedAfupOffices\\(\\) expects array, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$twitterHandle of method AppBundle\\\\Association\\\\Model\\\\CompanyMember\\:\\:setTwitterHandle\\(\\) expects string\\|null, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$websiteUrl of method AppBundle\\\\Association\\\\Model\\\\CompanyMember\\:\\:setWebsiteUrl\\(\\) expects string\\|null, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/CompanyPublicProfileAction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Binary operation "\\+" between int\\<0, max\\> and mixed results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
@@ -5422,12 +5290,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method count\\(\\) on mixed\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/MembersAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AppBundle\\\\Controller\\\\Website\\\\Member\\\\MembersAction\\:\\:addUser\\(\\) has parameter \\$pendingInvitations with generic interface CCMBenchmark\\\\Ting\\\\Repository\\\\CollectionInterface but does not specify its types\\: T$#',
-	'identifier' => 'missingType.generics',
 	'count' => 1,
 	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/MembersAction.php',
 ];
@@ -5466,24 +5328,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Member/MembersAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type array\\<AppBundle\\\\Association\\\\Model\\\\CompanyMemberInvitation\\>\\|null supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Membership/CompanyAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\<AppBundle\\\\Association\\\\Model\\\\CompanyMemberInvitation\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Membership/CompanyAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$numberOfMembers of method AppBundle\\\\Association\\\\CompanyMembership\\\\SubscriptionManagement\\:\\:createInvoiceForInscription\\(\\) expects int, mixed given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Website/Membership/CompanyAction.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'first\' on mixed\\.$#',

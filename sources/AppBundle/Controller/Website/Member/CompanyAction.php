@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller\Website\Member;
 
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\Form\AdminCompanyMemberType;
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Security\Authentication;
 use AppBundle\Twig\ViewRenderer;
 use Exception;
@@ -17,14 +17,14 @@ use Symfony\Component\HttpFoundation\Response;
 final class CompanyAction extends AbstractController
 {
     public function __construct(
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly ViewRenderer $view,
         private readonly Authentication $authentication,
     ) {}
 
     public function __invoke(Request $request): Response
     {
-        $company = $this->companyMemberRepository->get($this->authentication->getAfupUser()->getCompanyId());
+        $company = $this->personneMoraleRepository->find($this->authentication->getAfupUser()->getCompanyId());
         if ($company === null) {
             throw $this->createNotFoundException('Company not found');
         }
@@ -33,10 +33,10 @@ final class CompanyAction extends AbstractController
         $subscribeForm->handleRequest($request);
 
         if ($subscribeForm->isSubmitted() && $subscribeForm->isValid()) {
-            /** @var CompanyMember $member */
+            /** @var PersonneMorale $member */
             $member = $subscribeForm->getData();
             try {
-                $this->companyMemberRepository->save($member);
+                $this->personneMoraleRepository->save($member);
                 $this->addFlash('notice', 'Les modifications ont bien été enregistrées.');
             } catch (Exception) {
                 $this->addFlash('error', 'Une erreur est survenue. Merci de nous contacter.');

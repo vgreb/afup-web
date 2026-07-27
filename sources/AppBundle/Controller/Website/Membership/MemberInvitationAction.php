@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller\Website\Membership;
 
+use AppBundle\Association\Entity\PersonneMoraleInvitation;
+use AppBundle\Association\Entity\Repository\PersonneMoraleInvitationRepository;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\Event\NewMemberEvent;
 use AppBundle\Association\Form\UserType;
-use AppBundle\Association\Model\CompanyMemberInvitation;
-use AppBundle\Association\Model\Repository\CompanyMemberInvitationRepository;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\Association\Model\User;
 use AppBundle\Twig\ViewRenderer;
@@ -24,20 +24,20 @@ final class MemberInvitationAction extends AbstractController
         private readonly ViewRenderer $view,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly UserRepository $userRepository,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly CompanyMemberInvitationRepository $companyMemberInvitationRepository,
+        private readonly PersonneMoraleInvitationRepository $personneMoraleInvitationRepository,
     ) {}
 
     public function __invoke(Request $request, int $invitationId, string $token): Response
     {
-        $invitation = $this->companyMemberInvitationRepository->getOneBy(['id' => $invitationId, 'token' => $token, 'status' => CompanyMemberInvitation::STATUS_PENDING]);
+        $invitation = $this->personneMoraleInvitationRepository->findOneBy(['id' => $invitationId, 'token' => $token, 'status' => PersonneMoraleInvitation::STATUS_PENDING]);
         $company = null;
         if ($invitation) {
-            $company = $this->companyMemberRepository->get($invitation->getCompanyId());
+            $company = $this->personneMoraleRepository->find($invitation->companyId);
         }
 
-        if ($invitation === null || $company === null) {
+        if ($invitation === null || $company === null || $company->id === null) {
             throw $this->createNotFoundException(sprintf('Could not find invitation with token "%s"', $token));
         }
 
@@ -53,17 +53,17 @@ final class MemberInvitationAction extends AbstractController
             $user->setPassword($hash);
             $user
                 ->setStatus(User::STATUS_ACTIVE)
-                ->setCompanyId($company->getId())
+                ->setCompanyId($company->id)
             ;
 
-            if ($invitation->getManager()) {
+            if ($invitation->manager) {
                 $user->setRoles(['ROLE_COMPANY_MANAGER', 'ROLE_USER']);
             }
 
-            $invitation->setStatus(CompanyMemberInvitation::STATUS_ACCEPTED);
+            $invitation->status = PersonneMoraleInvitation::STATUS_ACCEPTED;
 
             $this->userRepository->save($user);
-            $this->companyMemberInvitationRepository->save($invitation);
+            $this->personneMoraleInvitationRepository->save($invitation);
             $this->addFlash('success', 'Votre compte a été créé !');
 
             $this->eventDispatcher->dispatch(new NewMemberEvent($user));

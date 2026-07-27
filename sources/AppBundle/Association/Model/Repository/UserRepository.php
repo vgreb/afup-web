@@ -6,7 +6,6 @@ namespace AppBundle\Association\Model\Repository;
 
 use AppBundle\Association\Genre;
 use AppBundle\Association\MemberType;
-use AppBundle\Association\Model\CompanyMember;
 use AppBundle\Association\Model\User;
 use AppBundle\Event\Model\Badge;
 use Aura\SqlQuery\Common\SelectInterface;
@@ -112,7 +111,7 @@ class UserRepository extends Repository implements MetadataInitializer, UserProv
         return $result->first();
     }
 
-    public function loadActiveUsersByCompany(CompanyMember $companyMember)
+    public function loadActiveUsersByCompany(int $companyId)
     {
         $queryBuilder = $this->getQueryBuilderWithCompleteUser();
         $queryBuilder
@@ -122,7 +121,7 @@ class UserRepository extends Repository implements MetadataInitializer, UserProv
         return $this
             ->getPreparedQuery($queryBuilder->getStatement())
             ->setParams([
-                'company' => $companyMember->getId(),
+                'company' => $companyId,
                 'state' => User::STATUS_ACTIVE,
             ])
             ->query($this->getCollection($this->getHydratorForUser()))

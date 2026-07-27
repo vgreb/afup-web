@@ -6,7 +6,7 @@ namespace AppBundle\Association\UserMembership;
 
 use AppBundle\AssembleeGenerale\Entity\Repository\PresenceRepository;
 use AppBundle\AssembleeGenerale\Enum\PresenceEtat;
-use AppBundle\Association\Model\CompanyMember;
+use AppBundle\Association\Entity\PersonneMorale;
 use AppBundle\Association\Model\User;
 use AppBundle\Event\Model\Repository\EventRepository;
 use AppBundle\Event\Model\Repository\UserBadgeRepository;
@@ -51,7 +51,7 @@ class BadgesComputer
         return $specific;
     }
 
-    public function getCompanyBadges(CompanyMember $companyMember): array
+    public function getCompanyBadges(PersonneMorale $companyMember): array
     {
         $badgesInfos = $this->prepareCompanyBadgesInfos($companyMember);
 
@@ -65,7 +65,7 @@ class BadgesComputer
     /**
      * @return array{date: (non-falsy-string & uppercase-string), code: non-falsy-string, tooltip: non-falsy-string}[]
      */
-    private function prepareCompanyBadgesInfos(CompanyMember $companyMember): array
+    private function prepareCompanyBadgesInfos(PersonneMorale $companyMember): array
     {
         $seniorityInfos = $this->seniorityComputer->computeCompanyAndReturnInfos($companyMember);
 

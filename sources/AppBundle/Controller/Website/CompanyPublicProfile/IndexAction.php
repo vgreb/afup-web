@@ -6,8 +6,8 @@ namespace AppBundle\Controller\Website\CompanyPublicProfile;
 
 use AppBundle\Antennes\Antenne;
 use AppBundle\Antennes\AntenneRepository;
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\UserMembership\BadgesComputer;
 use AppBundle\Twig\ViewRenderer;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,12 +15,12 @@ use Symfony\Component\HttpFoundation\Response;
 final class IndexAction extends CompanyPublicProfileController
 {
     public function __construct(
-        CompanyMemberRepository $companyMemberRepository,
+        PersonneMoraleRepository $personneMoraleRepository,
         private readonly ViewRenderer $view,
         private readonly BadgesComputer $badgesComputer,
         private readonly AntenneRepository $antenneRepository,
     ) {
-        parent::__construct($companyMemberRepository);
+        parent::__construct($personneMoraleRepository);
     }
 
     public function __invoke(int $id, string $slug): Response
@@ -37,7 +37,7 @@ final class IndexAction extends CompanyPublicProfileController
     /**
      * @return list<Antenne>
      */
-    private function getRelatedAfupAntennes(CompanyMember $companyMember): array
+    private function getRelatedAfupAntennes(PersonneMorale $companyMember): array
     {
         $antennes = [];
         foreach ($companyMember->getFormattedRelatedAfupOffices() as $localOffice) {

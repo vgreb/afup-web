@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Association\Form;
 
-use AppBundle\Association\Model\CompanyMemberInvitation;
+use AppBundle\Association\Entity\PersonneMoraleInvitation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -24,7 +24,7 @@ class CompanyMemberInvitationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => CompanyMemberInvitation::class,
+            'data_class' => PersonneMoraleInvitation::class,
         ]);
     }
 }

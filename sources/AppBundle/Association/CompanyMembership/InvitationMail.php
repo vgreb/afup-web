@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AppBundle\Association\CompanyMembership;
 
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\CompanyMemberInvitation;
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\PersonneMoraleInvitation;
 use AppBundle\Email\Mailer\Mailer;
 use AppBundle\Email\Mailer\MailUser;
 use AppBundle\Email\Mailer\MailUserFactory;
@@ -25,27 +25,27 @@ class InvitationMail
     /**
      * Send mail to please a user to join a company as a member
      *
-     * @param CompanyMember $companyMember The company who sends the invitation
-     * @param CompanyMemberInvitation $invitation The invitation to send
+     * @param PersonneMorale $companyMember The company who sends the invitation
+     * @param PersonneMoraleInvitation $invitation The invitation to send
      */
-    public function sendInvitation(CompanyMember $companyMember, CompanyMemberInvitation $invitation): bool
+    public function sendInvitation(PersonneMorale $companyMember, PersonneMoraleInvitation $invitation): bool
     {
         $text = $this->translator->trans('mail.invitationMembership.text',
             [
-                '%firstname%' => $companyMember->getFirstName(),
-                '%lastname%' => $companyMember->getLastName(),
+                '%firstname%' => $companyMember->firstName,
+                '%lastname%' => $companyMember->lastName,
                 '%link%' => $this->router->generate(
                     'company_invitation',
-                    ['invitationId' => $invitation->getId(), 'token' => $invitation->getToken()],
+                    ['invitationId' => $invitation->id, 'token' => $invitation->token],
                     UrlGeneratorInterface::ABSOLUTE_URL,
                 ),
             ],
         );
 
         return $this->mailer->sendTransactional(new Message(
-            sprintf('%s vous invite à profiter de son compte "Membre AFUP"', $companyMember->getCompanyName()),
+            sprintf('%s vous invite à profiter de son compte "Membre AFUP"', $companyMember->companyName),
             MailUserFactory::sponsors(),
-            new MailUser($invitation->getEmail()),
+            new MailUser($invitation->email),
         ), $text);
     }
 }

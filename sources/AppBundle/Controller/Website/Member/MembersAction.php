@@ -6,11 +6,11 @@ namespace AppBundle\Controller\Website\Member;
 
 use AppBundle\Association\CompanyMembership\InvitationMail;
 use AppBundle\Association\CompanyMembership\UserCompany;
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\PersonneMoraleInvitation;
+use AppBundle\Association\Entity\Repository\PersonneMoraleInvitationRepository;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\Form\CompanyMemberInvitationType;
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\CompanyMemberInvitation;
-use AppBundle\Association\Model\Repository\CompanyMemberInvitationRepository;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\Association\Model\User;
 use AppBundle\Model\CollectionFilter;
@@ -25,13 +25,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Webmozart\Assert\Assert;
 
 final class MembersAction extends AbstractController
 {
     public function __construct(
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly UserRepository $userRepository,
-        private readonly CompanyMemberInvitationRepository $companyMemberInvitationRepository,
+        private readonly PersonneMoraleInvitationRepository $personneMoraleInvitationRepository,
         private readonly ViewRenderer $view,
         private readonly CollectionFilter $collectionFilter,
         private readonly UserCompany $userCompany,
@@ -50,18 +51,18 @@ final class MembersAction extends AbstractController
             $companyId = $this->authentication->getAfupUser()->getCompanyId();
         }
 
-        $company = $this->companyMemberRepository->get($companyId);
-        if ($company === null) {
+        $company = $this->personneMoraleRepository->find($companyId);
+        if ($company === null || $company->id === null) {
             throw $this->createNotFoundException('Company not found');
         }
 
-        $users = $this->userRepository->loadActiveUsersByCompany($company);
-        $pendingInvitations = $this->companyMemberInvitationRepository->loadPendingInvitationsByCompany($company);
+        $users = $this->userRepository->loadActiveUsersByCompany($company->id);
+        $pendingInvitations = $this->personneMoraleInvitationRepository->loadPendingInvitationsByCompany($company->id);
 
-        $invitation = new CompanyMemberInvitation();
+        $invitation = new PersonneMoraleInvitation();
         $invitationForm = $this->createForm(CompanyMemberInvitationType::class, $invitation);
         $invitationForm->handleRequest($request);
-        $canAddUser = $pendingInvitations->count() + $users->count() < $company->getMaxMembers();
+        $canAddUser = count($pendingInvitations) + $users->count() < $company->maxMembers;
         if ($request->isMethod(Request::METHOD_POST)) {
             if ($invitationForm->isSubmitted() && $invitationForm->isValid()) {
                 if ($canAddUser) {
@@ -99,15 +100,18 @@ final class MembersAction extends AbstractController
         ]);
     }
 
+    /**
+     * @param PersonneMoraleInvitation[] $pendingInvitations
+     */
     private function addUser(
-        CompanyMember $company,
-        CompanyMemberInvitation $invitation,
+        PersonneMorale $company,
+        PersonneMoraleInvitation $invitation,
         CollectionInterface $users,
-        CollectionInterface $pendingInvitations,
+        array $pendingInvitations,
     ): void {
         // Check if there is already a pending invitation for this email and this company
-        $matchingUser = $this->collectionFilter->findOne($users, 'getEmail', $invitation->getEmail());
-        $matchingInvitation = $this->collectionFilter->findOne($pendingInvitations, 'getEmail', $invitation->getEmail());
+        $matchingUser = $this->collectionFilter->findOne($users, 'getEmail', $invitation->email);
+        $matchingInvitation = $this->findInvitationByEmail($pendingInvitations, $invitation->email);
 
         if ($matchingInvitation !== null || $matchingUser !== null) {
             $this->addFlash('error', 'Vous ne pouvez pas envoyer plusieurs invitations au même email.');
@@ -116,29 +120,29 @@ final class MembersAction extends AbstractController
         }
 
         // Handle invitation
-        $invitation
-            ->setSubmittedOn(new DateTime())
-            ->setCompanyId($company->getId())
-            ->setToken(base64_encode(random_bytes(30)))
-            ->setStatus(CompanyMemberInvitation::STATUS_PENDING);
-        $this->companyMemberInvitationRepository->save($invitation);
+        Assert::notNull($company->id);
+        $invitation->submittedOn = new DateTime();
+        $invitation->companyId = $company->id;
+        $invitation->token = base64_encode(random_bytes(30));
+        $invitation->status = PersonneMoraleInvitation::STATUS_PENDING;
+        $this->personneMoraleInvitationRepository->save($invitation);
         // Send mail to the other guy, begging for him to join the company
         $this->eventDispatcher->addListener(KernelEvents::TERMINATE, function () use ($company, $invitation): void {
             $this->invitationMail->sendInvitation($company, $invitation);
         });
-        $this->addFlash('notice', sprintf('L\'invitation a été envoyée à l\'adresse %s.', $invitation->getEmail()));
+        $this->addFlash('notice', sprintf('L\'invitation a été envoyée à l\'adresse %s.', $invitation->email));
     }
 
     /**
-     * @param CollectionInterface<CompanyMemberInvitation> $pendingInvitations
+     * @param PersonneMoraleInvitation[] $pendingInvitations
      */
-    private function removeInvitation(string $emailToDelete, CollectionInterface $pendingInvitations): void
+    private function removeInvitation(string $emailToDelete, array $pendingInvitations): void
     {
-        $invitationToDelete = $this->collectionFilter->findOne($pendingInvitations, 'getEmail', $emailToDelete);
+        $invitationToDelete = $this->findInvitationByEmail($pendingInvitations, $emailToDelete);
 
         if ($invitationToDelete !== null) {
-            $invitationToDelete->setStatus(CompanyMemberInvitation::STATUS_CANCELLED);
-            $this->companyMemberInvitationRepository->save($invitationToDelete);
+            $invitationToDelete->status = PersonneMoraleInvitation::STATUS_CANCELLED;
+            $this->personneMoraleInvitationRepository->save($invitationToDelete);
             $this->addFlash('notice', 'L\'invitation a été annulée.');
         } else {
             $this->addFlash('error', 'Une erreur a été rencontrée lors de la suppression de cette invitation');
@@ -146,11 +150,11 @@ final class MembersAction extends AbstractController
     }
 
     /**
-     * @param CollectionInterface<CompanyMemberInvitation> $pendingInvitations
+     * @param PersonneMoraleInvitation[] $pendingInvitations
      */
-    private function resendInvitation(string $emailToSend, CollectionInterface $pendingInvitations, CompanyMember $company): void
+    private function resendInvitation(string $emailToSend, array $pendingInvitations, PersonneMorale $company): void
     {
-        $invitationToSend = $this->collectionFilter->findOne($pendingInvitations, 'getEmail', $emailToSend);
+        $invitationToSend = $this->findInvitationByEmail($pendingInvitations, $emailToSend);
 
         if ($invitationToSend !== null) {
             $this->invitationMail->sendInvitation($company, $invitationToSend);
@@ -158,6 +162,20 @@ final class MembersAction extends AbstractController
         } else {
             $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi de l\'invitation');
         }
+    }
+
+    /**
+     * @param PersonneMoraleInvitation[] $pendingInvitations
+     */
+    private function findInvitationByEmail(array $pendingInvitations, string $email): ?PersonneMoraleInvitation
+    {
+        foreach ($pendingInvitations as $invitation) {
+            if ($invitation->email === $email) {
+                return $invitation;
+            }
+        }
+
+        return null;
     }
 
     /**

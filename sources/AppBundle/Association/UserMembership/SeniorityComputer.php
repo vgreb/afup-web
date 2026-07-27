@@ -4,21 +4,24 @@ declare(strict_types=1);
 
 namespace AppBundle\Association\UserMembership;
 
+use AppBundle\Association\Entity\PersonneMorale;
 use AppBundle\Association\MemberType;
-use AppBundle\Association\Model\CompanyMember;
 use AppBundle\Association\Model\User;
 use AppBundle\MembershipFee\Model\MembershipFee;
 use AppBundle\MembershipFee\Model\Repository\MembershipFeeRepository;
 use CCMBenchmark\Ting\Repository\Collection;
+use Webmozart\Assert\Assert;
 
 class SeniorityComputer
 {
     public function __construct(private readonly MembershipFeeRepository $membershipFeeRepository) {}
 
     /** @return array{years: int, first_year: int|null} */
-    public function computeCompanyAndReturnInfos(CompanyMember $companyMember): array
+    public function computeCompanyAndReturnInfos(PersonneMorale $companyMember): array
     {
-        $cotis = $this->membershipFeeRepository->getListByUserTypeAndId(MemberType::MemberCompany, $companyMember->getId());
+        Assert::notNull($companyMember->id);
+
+        $cotis = $this->membershipFeeRepository->getListByUserTypeAndId(MemberType::MemberCompany, $companyMember->id);
 
         return $this->computeFromCotisationsAndReturnInfos($cotis);
     }

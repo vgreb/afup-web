@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Controller\Website\Global;
 
 use Afup\Site\Corporate\Feuille;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Event\Model\Repository\TalkRepository;
 use AppBundle\Event\Model\Talk;
 use AppBundle\Site\Entity\Repository\ArticleRepository;
@@ -18,7 +18,7 @@ final class HtmlSitemapAction extends AbstractController
 {
     public function __construct(
         private readonly ViewRenderer $view,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly ArticleRepository $articleRepository,
         private readonly TalkRepository $talkRepository,
         private readonly FeuilleRepository $feuilleRepository,
@@ -55,17 +55,17 @@ final class HtmlSitemapAction extends AbstractController
 
     private function members(): array
     {
-        $displayableCompanies = $this->companyMemberRepository->findDisplayableCompanies();
+        $displayableCompanies = $this->personneMoraleRepository->findDisplayableCompanies();
 
         $members = [];
         foreach ($displayableCompanies as $member) {
             $url = $this->generateUrl('company_public_profile', [
-                'id' => $member->getId(),
+                'id' => $member->id,
                 'slug' => $member->getSlug(),
             ]);
 
             $members[] = [
-                'name' => $member->getCompanyName(),
+                'name' => $member->companyName,
                 'url' => $url,
             ];
         }

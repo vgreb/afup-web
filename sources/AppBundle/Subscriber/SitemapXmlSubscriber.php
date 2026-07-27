@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace AppBundle\Subscriber;
 
 use Afup\Site\Corporate\Feuille;
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Controller\Website\News\ListAction;
 use AppBundle\Event\Model\Event;
 use AppBundle\Event\Model\Repository\EventRepository;
@@ -32,7 +32,7 @@ class SitemapXmlSubscriber implements EventSubscriberInterface
         private readonly SpeakerRepository $speakerRepository,
         private readonly EventRepository $eventRepository,
         private readonly ArticleRepository $articleRepository,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly FeuilleRepository $feuilleRepository,
     ) {}
 
@@ -162,8 +162,8 @@ class SitemapXmlSubscriber implements EventSubscriberInterface
 
     private function registerMembers(UrlContainerInterface $urls): void
     {
-        /** @var CompanyMember[] $members */
-        $members = $this->companyMemberRepository->findDisplayableCompanies();
+        /** @var PersonneMorale[] $members */
+        $members = $this->personneMoraleRepository->findDisplayableCompanies();
 
         foreach ($members as $member) {
             $urls->addUrl(
@@ -171,7 +171,7 @@ class SitemapXmlSubscriber implements EventSubscriberInterface
                     $this->urlGenerator->generate(
                         'company_public_profile',
                         [
-                            'id' => $member->getId(),
+                            'id' => $member->id,
                             'slug' => $member->getSlug(),
                         ],
                         UrlGeneratorInterface::ABSOLUTE_URL,
