@@ -6,6 +6,7 @@ namespace AppBundle\Controller\Event\Ticket;
 
 use Afup\Site\Utils\Vat;
 use AppBundle\Event\Invoice\EventInvoiceReferenceGenerator;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\MemberType;
 use AppBundle\Association\Model\User;
 use AppBundle\Controller\Event\EventActionHelper;
@@ -30,6 +31,7 @@ final class TicketAction extends AbstractController
         private readonly TicketEventTypeRepository $ticketEventTypeRepository,
         private readonly EventInvoiceReferenceGenerator $referenceGenerator,
         private readonly Authentication $authentication,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
     ) {}
 
     public function __invoke($eventSlug, Request $request): Response
@@ -100,6 +102,11 @@ final class TicketAction extends AbstractController
             );
         }
 
+        $company = null;
+        if ($user instanceof User && $user->isMemberForCompany()) {
+            $company = $this->personneMoraleRepository->find($user->getCompanyId());
+        }
+
         return $this->render('event/ticket/ticket.html.twig', [
             'event' => $event,
             'ticketForm' => $purchaseForm->createView(),
@@ -109,6 +116,7 @@ final class TicketAction extends AbstractController
             'hasPricesDefinedWithVat' => $event->hasPricesDefinedWithVat(),
             'soldTicketsForMember' => $totalOfSoldTicketsByMember,
             'hasMembersTickets' => $this->ticketEventTypeRepository->doesEventHasRestrictedToMembersTickets($event, true, TicketEventTypeRepository::REMOVE_PAST_TICKETS),
+            'company' => $company,
         ]);
     }
 }

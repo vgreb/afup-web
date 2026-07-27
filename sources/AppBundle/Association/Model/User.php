@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Association\Model;
 
 use AppBundle\Antennes\AntenneRepository;
+use AppBundle\Association\Entity\PersonneMorale;
 use AppBundle\Association\Genre;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\Association\NotifiableInterface;
@@ -129,7 +130,7 @@ class User implements NotifyPropertyInterface, NotifiableInterface, UserInterfac
 
     private ?\DateTimeImmutable $lastSubscription = null;
 
-    private ?CompanyMember $company = null;
+    private ?PersonneMorale $company = null;
 
     private ?string $nearestOffice = null;
 
@@ -557,15 +558,12 @@ class User implements NotifyPropertyInterface, NotifiableInterface, UserInterfac
         return $this->lastSubscription?->diff($now)->days;
     }
 
-    /**
-     * @return CompanyMember
-     */
-    public function getCompany(): ?CompanyMember
+    public function getCompany(): ?PersonneMorale
     {
         return $this->company;
     }
 
-    public function setCompany(CompanyMember $company): self
+    public function setCompany(PersonneMorale $company): self
     {
         $this->company = $company;
         return $this;
