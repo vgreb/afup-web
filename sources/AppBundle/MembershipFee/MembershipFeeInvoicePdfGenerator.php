@@ -8,9 +8,9 @@ use Afup\Site\Utils\PDF_Facture;
 use Afup\Site\Utils\Utils;
 use Afup\Site\Utils\Vat;
 use AppBundle\Accounting\Invoices\InvoiceGenerator;
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\MemberType;
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\Association\Model\User;
 use AppBundle\Compta\BankAccount\BankAccountFactory;
@@ -21,7 +21,7 @@ final readonly class MembershipFeeInvoicePdfGenerator
     public function __construct(
         private MembershipFeeRepository $membershipFeeRepository,
         private UserRepository $userRepository,
-        private CompanyMemberRepository $companyMemberRepository,
+        private PersonneMoraleRepository $personneMoraleRepository,
         private InvoiceGenerator $invoiceGenerator,
         private BankAccountFactory $bankAccountFactory,
     ) {}
@@ -36,14 +36,13 @@ final readonly class MembershipFeeInvoicePdfGenerator
     public function genererFacture(int $idCotisation, ?string $chemin = null): ?string
     {
         $cotisation = $this->membershipFeeRepository->get($idCotisation);
+        $userId = $cotisation->getUserId();
 
-        $userRepository = match ($cotisation->getUserType()) {
-            MemberType::MemberCompany => $this->companyMemberRepository,
-            default => $this->userRepository,
+        /** @var User|PersonneMorale $user */
+        $user = match ($cotisation->getUserType()) {
+            MemberType::MemberCompany => $this->personneMoraleRepository->find($userId),
+            default => $this->userRepository->get($userId),
         };
-
-        /** @var User|CompanyMember $user */
-        $user = $userRepository->get($cotisation->getUserId());
         $invoiceData = $this->invoiceGenerator->getInvoiceData($user);
 
         $dateFacture = $cotisation->getInvoiceDate()

@@ -10,9 +10,9 @@ use Afup\Site\Droits;
 use Afup\Site\Utils\Utils;
 use Afup\Site\Utils\Vat;
 use AppBundle\Security\MembershipFeeVoter;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\MembershipFeeReferenceGenerator;
 use AppBundle\Association\MemberType;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\Association\UserMembership\UserService;
 use AppBundle\MembershipFee\Model\MembershipFee;
@@ -29,7 +29,7 @@ final class IndexAction extends AbstractController
     public function __construct(
         private readonly ViewRenderer $view,
         private readonly UserRepository $userRepository,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly UserService $userService,
         private readonly PayboxFactory $payboxFactory,
         private readonly MembershipFeeService $membershipFeeService,
@@ -76,7 +76,7 @@ final class IndexAction extends AbstractController
             $type_personne = MemberType::MemberCompany;
             $prefixe = 'Personne morale';
 
-            if (!$company = $this->companyMemberRepository->findById($id_personne)) {
+            if (!$company = $this->personneMoraleRepository->findById($id_personne)) {
                 throw $this->createNotFoundException('La personne morale n\'existe pas');
             }
             $montant = $company->getMembershipFee();

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace AppBundle\MembershipFee;
 
 use AppBundle\Afup;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\MemberType;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\Email\Mailer\Attachment;
 use AppBundle\Email\Mailer\Mailer;
@@ -22,7 +22,7 @@ final readonly class MembershipFeeMailer
     public function __construct(
         private MembershipFeeRepository $membershipFeeRepository,
         private UserRepository $userRepository,
-        private CompanyMemberRepository $companyMemberRepository,
+        private PersonneMoraleRepository $personneMoraleRepository,
         private Mailer $mailer,
         private MembershipFeeInvoicePdfGenerator $pdfGenerator,
         #[Autowire('%kernel.project_dir%/../htdocs/cache/')]
@@ -39,12 +39,12 @@ final readonly class MembershipFeeMailer
         $membership = $this->membershipFeeRepository->get($idCotisation);
 
         if ($membership->getUserType() === MemberType::MemberCompany) {
-            $company = $this->companyMemberRepository->get($membership->getUserId());
+            $company = $this->personneMoraleRepository->find($membership->getUserId());
             Assert::notNull($company);
             $contactPhysique = [
-                'nom' => $company->getLastName(),
-                'prenom' => $company->getFirstName(),
-                'email' => $company->getEmail(),
+                'nom' => $company->lastName,
+                'prenom' => $company->firstName,
+                'email' => $company->email,
             ];
         } else {
             $user = $this->userRepository->get($membership->getUserId());
@@ -107,10 +107,10 @@ final readonly class MembershipFeeMailer
         ];
 
         if ($typePersonne == MemberType::MemberCompany->value) {
-            if ($company = $this->companyMemberRepository->get($idPersonne)) {
-                $infos['nom'] = $company->getLastName();
-                $infos['prenom'] = $company->getFirstName();
-                $infos['email'] = $company->getEmail();
+            if ($company = $this->personneMoraleRepository->find($idPersonne)) {
+                $infos['nom'] = $company->lastName;
+                $infos['prenom'] = $company->firstName;
+                $infos['email'] = $company->email;
             }
         } else {
             if ($user = $this->userRepository->get($idPersonne)) {

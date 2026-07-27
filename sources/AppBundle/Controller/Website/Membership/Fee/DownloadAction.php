@@ -6,9 +6,9 @@ namespace AppBundle\Controller\Website\Membership\Fee;
 
 use AppBundle\MembershipFee\MembershipFeeInvoicePdfGenerator;
 use Afup\Site\Droits;
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\MemberType;
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\Association\Model\User;
 use AppBundle\AuditLog\Audit;
@@ -24,7 +24,7 @@ final class DownloadAction extends AbstractController
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly MembershipFeeRepository $membershipFeeRepository,
         private readonly MembershipFeeInvoicePdfGenerator $pdfGenerator,
         private readonly Droits $droits,
@@ -46,9 +46,9 @@ final class DownloadAction extends AbstractController
         $membershipFee = $this->membershipFeeRepository->get($id);
 
         if ($membershipFee->getUserType() === MemberType::MemberCompany) {
-            $company = $this->companyMemberRepository->get($membershipFee->getUserId());
-            Assert::isInstanceOf($company, CompanyMember::class);
-            $patternPrefix = $company->getCompanyName();
+            $company = $this->personneMoraleRepository->find($membershipFee->getUserId());
+            Assert::isInstanceOf($company, PersonneMorale::class);
+            $patternPrefix = $company->companyName;
         } else {
             $user = $this->userRepository->get($membershipFee->getUserId());
             Assert::isInstanceOf($user, User::class);

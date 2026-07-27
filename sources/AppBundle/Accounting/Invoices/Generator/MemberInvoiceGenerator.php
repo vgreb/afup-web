@@ -5,23 +5,26 @@ declare(strict_types=1);
 namespace AppBundle\Accounting\Invoices\Generator;
 
 use AppBundle\Accounting\Invoices\Dto\InvoiceData;
-use AppBundle\Association\Model\CompanyMember;
+use AppBundle\Association\Entity\PersonneMorale;
 use AppBundle\Association\Model\User;
+use Webmozart\Assert\Assert;
 
 class MemberInvoiceGenerator implements InvoiceGeneration
 {
-    public function generate(User|CompanyMember $member): InvoiceData
+    public function generate(User|PersonneMorale $member): InvoiceData
     {
+        Assert::isInstanceOf($member, User::class);
+
         return new InvoiceData(
             $member->getFirstName() . ' ' . $member->getLastName(),
             $member->getAddress(),
-            $member->getZipcode(),
+            $member->getZipCode(),
             $member->getCity(),
             $member->getLastName(),
         );
     }
 
-    public function support(User|CompanyMember $user): bool
+    public function support(User|PersonneMorale $user): bool
     {
         return $user instanceof User;
     }

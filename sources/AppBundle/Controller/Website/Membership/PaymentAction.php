@@ -6,7 +6,7 @@ namespace AppBundle\Controller\Website\Membership;
 
 use AppBundle\Afup;
 use AppBundle\MembershipFee\MembershipFeeService;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Compta\BankAccount\BankAccountFactory;
 use AppBundle\MembershipFee\Model\MembershipFee;
 use AppBundle\Payment\PayboxBilling;
@@ -19,7 +19,7 @@ final class PaymentAction extends AbstractController
 {
     public function __construct(
         private readonly ViewRenderer $view,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly PayboxFactory $payboxFactory,
         private readonly MembershipFeeService $membershipFeeService,
     ) {}
@@ -29,19 +29,19 @@ final class PaymentAction extends AbstractController
         $invoice = $this->membershipFeeService->getByInvoice($invoiceNumber, $token);
         $company = null;
         if ($invoice instanceof MembershipFee) {
-            $company = $this->companyMemberRepository->get($invoice->getUserId());
+            $company = $this->personneMoraleRepository->find($invoice->getUserId());
         }
 
         if (!$invoice || $company === null) {
             throw $this->createNotFoundException(sprintf('Could not find the invoice "%s" with token "%s"', $invoiceNumber, $token));
         }
 
-        $payboxBilling = new PayboxBilling($company->getFirstName(), $company->getLastName(), $company->getAddress(), $company->getZipCode(), $company->getCity(), $company->getCountry());
+        $payboxBilling = new PayboxBilling($company->firstName, $company->lastName, $company->address, $company->zipCode, $company->city, $company->country);
 
         $paybox = $this->payboxFactory->createPayboxForSubscription(
             'F' . $invoiceNumber,
             (float) $invoice->getAmount(),
-            $company->getEmail(),
+            $company->email,
             $payboxBilling,
         );
 

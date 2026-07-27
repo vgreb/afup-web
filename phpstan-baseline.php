@@ -590,12 +590,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/sources/AppBundle/Accounting/Form/TransactionsImportType.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method AppBundle\\\\Association\\\\Model\\\\CompanyMember\\|AppBundle\\\\Association\\\\Model\\\\User\\:\\:getCompanyName\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/sources/AppBundle/Accounting/Invoices/Generator/CompanyMemberInvoiceGenerator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Binary operation "\\+" between mixed and 0\\|30\\|90\\|110\\|130\\|160\\|190 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 4,

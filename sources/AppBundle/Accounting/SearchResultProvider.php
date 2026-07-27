@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Accounting;
 
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\Model\Repository\SubscriptionRepository;
 use AppBundle\Event\Model\Repository\InvoiceRepository;
 use AppBundle\Event\Model\Repository\TicketRepository;
@@ -13,7 +13,7 @@ class SearchResultProvider
 {
     public function __construct(
         private readonly SubscriptionRepository $subscriptionRepository,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly TicketRepository $ticketRepository,
         private readonly InvoiceRepository $invoiceRepository,
     ) {}
@@ -25,7 +25,7 @@ class SearchResultProvider
             return [];
         }
 
-        $companyMembers = $this->companyMemberRepository->searchCompanyMemberSubscriptions($query);
+        $companyMembers = $this->personneMoraleRepository->searchCompanyMemberSubscriptions($query);
         $members = $this->subscriptionRepository->searchMemberSubscriptions($query);
         $eventsRegistrations = $this->ticketRepository->searchAllPastEvents($query);
         $eventsInvoices = $this->invoiceRepository->searchAllPastEventsInvoices($query);
