@@ -15,9 +15,10 @@
         </thead>
         <tbody>
         {% for log in logs %}
+            {% set company = companies[log.app.companyId] ?? null %}
             <tr class="{% if loop.index is even %}even{% endif %}">
                 <td>{{ log.app.firstname }} {{ log.app.lastname }}</td>
-                <td>{% if log.apm is not null %}{{ log.apm.companyName }}{% else %}¤{% endif %}</td>
+                <td>{% if company is not null %}{{ company.companyName }}{% else %}¤{% endif %}</td>
                 <td class="center aligned">
                     {% if log.asrl.mailSent %}
                         <span class="ui green label">Ok</span>
@@ -30,9 +31,9 @@
                 <td class="right aligned">
                     <a data-position="left center"
                        class="compact ui green icon button"
-                       {% if log.apm is not null %}
-                           href="{{ url('admin_membership_fee_list', {'memberType': enum('AppBundle\\Association\\MemberType').MemberCompany.value, 'memberId': log.apm.id}) }}"
-                           data-tooltip="Gérer les cotisations de {{ log.apm.companyName }}"
+                       {% if company is not null %}
+                           href="{{ url('admin_membership_fee_list', {'memberType': enum('AppBundle\\Association\\MemberType').MemberCompany.value, 'memberId': company.id}) }}"
+                           data-tooltip="Gérer les cotisations de {{ company.companyName }}"
                         {% else %}
                            href="{{ url('admin_membership_fee_list', {'memberType': enum('AppBundle\\Association\\MemberType').MemberPhysical.value, 'memberId': log.app.id}) }}"
                            data-tooltip="Gérer les cotisations de {{ log.app.firstname }} {{ log.app.lastname }}"
