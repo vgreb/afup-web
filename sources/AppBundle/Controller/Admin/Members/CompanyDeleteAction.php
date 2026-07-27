@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller\Admin\Members;
 
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\AuditLog\Audit;
 use Exception;
 use InvalidArgumentException;
@@ -15,19 +15,19 @@ use Symfony\Component\HttpFoundation\Request;
 class CompanyDeleteAction extends AbstractController
 {
     public function __construct(
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly Audit $audit,
     ) {}
 
     public function __invoke(Request $request): RedirectResponse
     {
-        $companyMember = $this->companyMemberRepository->get($request->query->get('id'));
+        $companyMember = $this->personneMoraleRepository->find($request->query->get('id'));
         if (null === $companyMember) {
             throw $this->createNotFoundException('Personne morale non trouvée');
         }
         try {
-            $this->companyMemberRepository->remove($companyMember);
-            $this->audit->log('Suppression de la personne morale ' . $companyMember->getId());
+            $this->personneMoraleRepository->remove($companyMember);
+            $this->audit->log('Suppression de la personne morale ' . $companyMember->id);
             $this->addFlash('notice', 'La personne morale a été supprimée');
         } catch (InvalidArgumentException $e) {
             $this->addFlash('error', $e->getMessage());

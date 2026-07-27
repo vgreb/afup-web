@@ -2528,12 +2528,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/sources/AppBundle/Command/TicketStatsNotificationCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Command/UpdateCompanyMemberStateCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method format\\(\\) on DateTime\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -3056,30 +3050,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/Journal/UploadAttachmentAction.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getCompanyName\\(\\) on AppBundle\\\\Association\\\\Model\\\\CompanyMember\\|AppBundle\\\\Association\\\\Model\\\\User\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/MembershipFee/AddMembershipFeeAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getFirstName\\(\\) on AppBundle\\\\Association\\\\Model\\\\CompanyMember\\|AppBundle\\\\Association\\\\Model\\\\User\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/MembershipFee/AddMembershipFeeAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getId\\(\\) on AppBundle\\\\Association\\\\Model\\\\CompanyMember\\|AppBundle\\\\Association\\\\Model\\\\User\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/MembershipFee/AddMembershipFeeAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getLastName\\(\\) on AppBundle\\\\Association\\\\Model\\\\CompanyMember\\|AppBundle\\\\Association\\\\Model\\\\User\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/MembershipFee/AddMembershipFeeAction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$datetime of method Symfony\\\\Polyfill\\\\Intl\\\\Icu\\\\IntlDateFormatter\\:\\:format\\(\\) expects DateTimeInterface\\|int\\|string, DateTime\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -3096,30 +3066,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/MembershipFee/DownloadMembershipFeeInvoiceAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getCompanyName\\(\\) on AppBundle\\\\Association\\\\Model\\\\CompanyMember\\|AppBundle\\\\Association\\\\Model\\\\User\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/MembershipFee/EditMembershipFeeAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getFirstName\\(\\) on AppBundle\\\\Association\\\\Model\\\\CompanyMember\\|AppBundle\\\\Association\\\\Model\\\\User\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/MembershipFee/EditMembershipFeeAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getId\\(\\) on AppBundle\\\\Association\\\\Model\\\\CompanyMember\\|AppBundle\\\\Association\\\\Model\\\\User\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/MembershipFee/EditMembershipFeeAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getLastName\\(\\) on AppBundle\\\\Association\\\\Model\\\\CompanyMember\\|AppBundle\\\\Association\\\\Model\\\\User\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/sources/AppBundle/Controller/Admin/Accounting/MembershipFee/EditMembershipFeeAction.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$entity of method CCMBenchmark\\\\Ting\\\\Repository\\\\Repository\\<AppBundle\\\\MembershipFee\\\\Model\\\\MembershipFee\\>\\:\\:save\\(\\) expects AppBundle\\\\MembershipFee\\\\Model\\\\MembershipFee, AppBundle\\\\MembershipFee\\\\Model\\\\MembershipFee\\|null given\\.$#',

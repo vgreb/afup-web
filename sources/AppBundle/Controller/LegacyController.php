@@ -8,7 +8,7 @@ namespace AppBundle\Controller;
 
 use Afup\Site\Utils\Pays;
 use Afup\Site\Utils\Utils;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\Email\Mailer\Mailer;
 use AppBundle\Event\Invoice\InvoiceService;
@@ -43,7 +43,7 @@ class LegacyController extends AbstractController
         private readonly EventStatsRepository $eventStatsRepository,
         private readonly TicketRepository $ticketRepository,
         private readonly UserRepository $userRepository,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly Mailer $mailer,
         private readonly SpeakerRepository $speakerRepository,
         private readonly TalkRepository $talkRepository,

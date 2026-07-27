@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace AppBundle\Association\Form;
 
 use Afup\Site\Utils\Pays;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\Genre;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Association\Model\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class UserEditType extends AbstractType
 {
     public function __construct(
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly Pays $pays,
     ) {}
 
@@ -38,7 +38,7 @@ class UserEditType extends AbstractType
             ->add('companyId', ChoiceType::class, [
                 'label' => 'Personne morale',
                 'required' => false,
-                'choices' => array_flip($this->companyMemberRepository->getList()),
+                'choices' => array_flip($this->personneMoraleRepository->getList()),
             ])
             ->add('genre', EnumType::class, [
                 'required' => false,

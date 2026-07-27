@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller\Admin\Members;
 
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\Form\CompanyEditType;
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,15 +16,15 @@ use Symfony\Component\HttpFoundation\Response;
 class CompanyAction extends AbstractController
 {
     public function __construct(
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly UserRepository $userRepository,
     ) {}
 
     public function __invoke(Request $request, ?int $id): Response
     {
-        $company = new CompanyMember();
+        $company = new PersonneMorale();
         if ($id) {
-            $company = $this->companyMemberRepository->get($id);
+            $company = $this->personneMoraleRepository->find($id);
             if ($company === null) {
                 $this->addFlash('error', 'Personne morale non trouvée');
                 return $this->redirectToRoute('admin_members_company_list');
@@ -34,10 +34,10 @@ class CompanyAction extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->companyMemberRepository->save($company);
+                $this->personneMoraleRepository->save($company);
                 $this->addFlash('notice', 'La personne morale a été ' . ($id ? 'modifiée' : 'ajoutée'));
 
-                return $this->redirectToRoute('admin_members_company_list', ['filter' => $company->getCompanyName()]);
+                return $this->redirectToRoute('admin_members_company_list', ['filter' => $company->companyName]);
             } catch (Exception) {
                 $this->addFlash('error', 'Une erreur est survenue lors de l\'ajout de la personne morale');
             }
@@ -45,7 +45,7 @@ class CompanyAction extends AbstractController
 
         return $this->render('admin/members/company/' . ($id ? 'edit' : 'add') . '.html.twig', [
             'form' => $form->createView(),
-            'users' => $this->userRepository->search('lastname', 'asc', null, $company->getId(), onlyActive: false),
+            'users' => $this->userRepository->search('lastname', 'asc', null, $company->id, onlyActive: false),
             'company' => $company,
         ]);
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller\Admin\Members;
 
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -12,7 +12,7 @@ use Twig\Environment;
 class CompanyListAction
 {
     public function __construct(
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly Environment $twig,
     ) {}
 
@@ -25,13 +25,13 @@ class CompanyListAction
         $onlyDisplayActive = !$request->query->getBoolean('alsoDisplayInactive');
 
         return new Response($this->twig->render('admin/members/company_list.html.twig', [
-            'companies' => $this->companyMemberRepository->search(
+            'companies' => $this->personneMoraleRepository->search(
                 $sort,
                 $direction,
                 $filter,
                 $onlyDisplayActive,
             ),
-            'activeMembers' => $this->companyMemberRepository->countActiveByCompany(),
+            'activeMembers' => $this->personneMoraleRepository->countActiveByCompany(),
             'onlyDisplayActive' => $onlyDisplayActive,
             'filter' => $filter,
             'sort' => $sort,

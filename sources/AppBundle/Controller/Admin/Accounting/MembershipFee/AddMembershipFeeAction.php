@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller\Admin\Accounting\MembershipFee;
 
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\MemberType;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\AuditLog\Audit;
 use AppBundle\MembershipFee\Form\MembershipFeeType;
@@ -19,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AddMembershipFeeAction extends AbstractController
 {
     public function __construct(
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
         private readonly UserRepository $userRepository,
         private readonly MembershipFeeRepository $membershipFeeRepository,
         private readonly ClockInterface $clock,
@@ -30,17 +31,20 @@ class AddMembershipFeeAction extends AbstractController
     {
         $membershipFee = new MembershipFee();
         $member = match ($memberType) {
-            MemberType::MemberCompany => $this->companyMemberRepository->get($memberId),
+            MemberType::MemberCompany => $this->personneMoraleRepository->find($memberId),
             MemberType::MemberPhysical => $this->userRepository->get($memberId),
         };
+        if ($member === null) {
+            throw $this->createNotFoundException('Member not found');
+        }
 
-        $startDate = $this->membershipFeeRepository->getMembershipStartingDate($memberType, $member->getId());
+        $startDate = $this->membershipFeeRepository->getMembershipStartingDate($memberType, $memberId);
         $endDate = clone $startDate;
         $endDate->modify('+1 year');
         $membershipFee->setStartDate($startDate)
                       ->setEndDate($endDate)
                       ->setUserType($memberType)
-                      ->setUserId($member->getId())
+                      ->setUserId($memberId)
                       ->setToken(base64_encode(random_bytes(30)))
                       ->setInvoiceDate($this->clock->now())
         ;
@@ -55,7 +59,7 @@ class AddMembershipFeeAction extends AbstractController
             );
             $fmt->setPattern('dd MMMM yyyy');
 
-            $name = $memberType->value === MemberType::MemberCompany->value ? $member->getCompanyName() : $member->getFirstName() . ' ' . $member->getLastName();
+            $name = $member instanceof PersonneMorale ? $member->companyName : $member->getFirstName() . ' ' . $member->getLastName();
 
             try {
                 $membershipFee->setInvoiceNumber($this->membershipFeeRepository->generateInvoiceNumber());
@@ -65,7 +69,7 @@ class AddMembershipFeeAction extends AbstractController
             } catch (\Exception) {
                 $this->addFlash('error', 'Une erreur est survenue lors de l\'ajout de la cotisation jusqu\'au ' . $fmt->format($membershipFee->getEndDate()) . ' pour ' . $name);
             }
-            return $this->redirectToRoute('admin_membership_fee_list', ['memberType' => $memberType->value, 'memberId' => $member->getId()]);
+            return $this->redirectToRoute('admin_membership_fee_list', ['memberType' => $memberType->value, 'memberId' => $memberId]);
         }
 
         return $this->render('admin/accounting/membership/add.html.twig', [

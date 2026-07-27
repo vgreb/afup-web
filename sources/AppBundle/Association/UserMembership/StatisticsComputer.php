@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AppBundle\Association\UserMembership;
 
-use AppBundle\Association\Model\CompanyMember;
-use AppBundle\Association\Model\Repository\CompanyMemberRepository;
+use AppBundle\Association\Entity\PersonneMorale;
+use AppBundle\Association\Entity\Repository\PersonneMoraleRepository;
 use AppBundle\Association\Model\Repository\UserRepository;
 use AppBundle\Association\Model\User;
 
@@ -13,7 +13,7 @@ class StatisticsComputer
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly CompanyMemberRepository $companyMemberRepository,
+        private readonly PersonneMoraleRepository $personneMoraleRepository,
     ) {}
 
     public function computeStatistics(): Statistics
@@ -34,7 +34,7 @@ class StatisticsComputer
                 $statistics->usersCountWithoutCompanies++;
             }
         }
-        $statistics->companiesCount = $this->companyMemberRepository->countByStatus(CompanyMember::STATUS_ACTIVE);
+        $statistics->companiesCount = $this->personneMoraleRepository->countByStatus(PersonneMorale::STATUS_ACTIVE);
 
         return $statistics;
     }
